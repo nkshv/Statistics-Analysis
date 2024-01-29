@@ -27,17 +27,26 @@ def process_values():
     lower_fence = q[0] - 1.5 * IQR
     outliers = [i for i in args if i > upper_fence or i < lower_fence]
 
-    result_label.config(text=f"""Number of values: {len_values}\nMean: {mean:.4f}\nMedian: {median:.4f}\nMode: {mode}\nStandard deviation: {stdev:.4f}\nVariance: {variance:.4f}\nMaximum: {maximum}\nMinimum: {minimum}\nQ1: {q[0]}   Q2: {q[1]}   Q3: {q[2]}\nN. of outliers: {len(outliers)}""")
-def show_popup():
-    # Create the pop-up window
-    popup = tk.Toplevel()
-    popup.title("Pop-up Window")
+    result_window = tk.Toplevel(root)
+    result_window.title("Result")
 
-    # Create a label in the pop-up window
-    label = tk.Label(popup, text="Pop-up window content")
+    result_window.geometry("400x300")
+    result_window.resizable(False, False)
+    
+    result_label = tk.Label(result_window, text="", font='verdana 13', justify='left')
+   
+
+    result_label.pack(side='top', pady=20)
+    result_label.lift()
+    result_label.config(text=f"""Number of values: {len_values}\nMean: {mean:.4f}\nMedian: {median:.4f}\nMode: {mode}\nStandard deviation: {stdev:.4f}\nVariance: {variance:.4f}\nMaximum: {maximum}\nMinimum: {minimum}\nQ1: {q[0]}   Q2: {q[1]}   Q3: {q[2]}\nN. of outliers: {len(outliers)}""")
+
+def show_popup():
+    popup = tk.Toplevel()
+    popup.title("Graphs")
+
+    label = tk.Label(popup, text="")
     label.pack(pady=10)
 
-    # Create buttons in the pop-up window
     button1 = tk.Button(popup, text="Boxplot", command=lambda: show_image('boxplot'))
     button1.pack(pady=5)
 
@@ -55,6 +64,7 @@ def show_popup():
 
     button6 = tk.Button(popup, text="Hexbin", command=lambda: show_image('hexbin'))
     button6.pack(pady=5)
+
 def show_image(plot_type):
     values_str = values.get()
     args = [float(i) for i in values_str.split(",")]
@@ -87,22 +97,18 @@ def show_image(plot_type):
     popup.mainloop()
 
 root = tk.Tk()
-result_label = tk.Label(root, text="", bg='#d7b7ad', font='verdana 13', justify='left')
-result_label.pack()
 
 root.geometry('1600x900+100+100')
 root.title("Statistics Calculator")
-image = tk.PhotoImage(file='anime.png')
+image = tk.PhotoImage(file='assets/bg.png')
 background_label = tk.Label(root, image=image)
 background_label.place(relwidth=1, relheight=1)
-
-result_label.lift()
 
 values = tk.StringVar()
 
 signin = ttk.Frame(root)
 signin.pack(padx=10, pady=10, expand=True)
-label = ttk.Label(signin, text="Values:")
+label = ttk.Label(signin, text="Values:", font='verdana 14')
 
 label.pack(fill='x', expand=True)
 entry = ttk.Entry(signin, textvariable=values)
@@ -110,8 +116,8 @@ entry.pack(fill='x', expand=True)
 
 entry.focus()
 
-img1 = PhotoImage(file='button.png')
-img2 = PhotoImage(file='button2.png')
+img1 = PhotoImage(file='assets/button.png')
+img2 = PhotoImage(file='assets/button2.png')
 button = ttk.Button(signin, text="Calculate", command=process_values)
 button.config(image=img1)
 button.pack()
@@ -119,7 +125,7 @@ data_button = ttk.Button(signin, text="Data visualization", command=show_popup)
 data_button.config(image=img2)
 data_button.pack()
 
-# bind the 'Return' key to the process_values function
+
 root.bind('<Return>', lambda event: process_values())
 
 root.mainloop()
